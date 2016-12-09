@@ -2,6 +2,12 @@
 
 > Register and receive push notifications
 
+> Added Mixpanel constants for 'onMessageReceived' method
+
+> Added some cancel logic that able remove some notifications in android
+
+> Stuck in 1.8.1 version of original 'phonegap-plugin-push' by the moment
+
 # What is this?
 
 This plugin offers support to receive and handle native push notifications with a **single unified API**, and **with no dependency on any other plugins**.
