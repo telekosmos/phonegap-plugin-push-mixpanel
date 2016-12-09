@@ -254,6 +254,16 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
+        int cancelId = parseInt("cancel", extras);
+
+        Log.d(LOG_TAG, "extracted cancelId =[" + cancelId + "]");
+
+        if (cancelId != 0) {
+            mNotificationManager.cancel(appName, cancelId);
+
+            return;
+        }
+
         int notId = parseInt(NOT_ID, extras);
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -388,23 +398,15 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     PendingIntent pIntent = null;
                     if (inline) {
                         Log.d(LOG_TAG, "Version: " + android.os.Build.VERSION.SDK_INT + " = " + android.os.Build.VERSION_CODES.M);
-                        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.M) {
+
                             Log.d(LOG_TAG, "push activity");
                             intent = new Intent(this, PushHandlerActivity.class);
-                        } else {
-                            Log.d(LOG_TAG, "push receiver");
-                            intent = new Intent(this, BackgroundActionButtonHandler.class);
-                        }
 
                         updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
 
-                        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.M) {
                             Log.d(LOG_TAG, "push activity");
                             pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
-                        } else {
-                            Log.d(LOG_TAG, "push receiver");
-                            pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
-                        }
+
                     } else if (foreground) {
                         intent = new Intent(this, PushHandlerActivity.class);
                         updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
